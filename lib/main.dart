@@ -34,6 +34,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
   Future<States> statesData;
 
   CovidData covidApi = new CovidData();
@@ -42,14 +43,14 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     print("init state");
 
-    statesData = covidApi.fetchData();
+    statesData = covidApi.fetchNewData();
 
     super.initState();
   }
 
   void _refreshData() {
     print('Loading new data');
-    statesData = covidApi.fetchData();
+    statesData = covidApi.fetchNewData();
   }
 
   @override
@@ -87,11 +88,6 @@ class _MyHomePageState extends State<MyHomePage> {
             },
           ),
         ),
-        // floatingActionButton: FloatingActionButton(
-        //   onPressed: _refreshData,
-        //   tooltip: 'Increment',
-        //   child: Icon(Icons.refresh),
-        // ), // This trailing comma makes auto-formatting nicer for build methods.
       ),
     );
   }

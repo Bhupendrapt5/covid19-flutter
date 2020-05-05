@@ -1,4 +1,5 @@
 class States {
+  
   final List<dynamic> states;
  
   States({
@@ -12,5 +13,3 @@ class States {
     );
   }
 }
-
-
