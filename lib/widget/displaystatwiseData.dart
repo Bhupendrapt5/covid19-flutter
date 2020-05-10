@@ -1,24 +1,32 @@
 import 'package:flutter/material.dart';
 
 import '../model/pastdata.dart';
-import '../coviddata.dart';
-import '../model/districtdata.dart';
+import '../model/statelist.dart';
+import '../model/districtDaily.dart';
 
 
-class StateWiseData extends StatefulWidget {
+class DisplayDistrictWiseData extends StatefulWidget {
   final String stateName;
   final String stateCode;
-  final List<dynamic> districtData;
+  final List<DistrictData> districtData;
+  final List<Map<String, dynamic>> pastDataState;
+  final Map<String, dynamic> dailyDistrictData;
 
-  const StateWiseData(
-      {Key key, this.stateName, this.districtData, this.stateCode})
-      : super(key: key);
+  const DisplayDistrictWiseData({
+    Key key,
+    @required this.stateName,
+    @required this.districtData,
+    @required this.stateCode,
+    @required this.pastDataState,
+    this.dailyDistrictData,
+  }) : super(key: key);
 
   @override
-  _StateWiseDataState createState() => _StateWiseDataState();
+  _DisplayDistrictWiseDataState createState() =>
+      _DisplayDistrictWiseDataState();
 }
 
-class _StateWiseDataState extends State<StateWiseData> {
+class _DisplayDistrictWiseDataState extends State<DisplayDistrictWiseData> {
   bool isExpanded = false;
   bool isLoaded = false;
 
@@ -27,43 +35,38 @@ class _StateWiseDataState extends State<StateWiseData> {
   int recvrdTotal = 0;
   int decdTotal = 0;
 
-  int confrmPast = 0;
-  int recvrdPast = 0;
-  int decdPast = 0;
-
   int confrmNew = 0;
   int recvrdNew = 0;
   int decdNew = 0;
-
+  List<Map<String, dynamic>> completeMap = [];
   Future<PastData> pastData;
 
-  CovidData covidApi;
+  // CovidData covidApi;
 
   _loadData() async {
-    widget.districtData.asMap().forEach((key, value) {
-      Map<String, dynamic> tmp = value;
-      confrmTotal = confrmTotal + tmp['confirmed'];
-      actvTotal = actvTotal + tmp['active'];
-      recvrdTotal = recvrdTotal + tmp['recovered'];
-      decdTotal = decdTotal + tmp['deceased'];
+    int confrmPast = 0;
+    int recvrdPast = 0;
+    int decdPast = 0;
+
+    widget.districtData.forEach((element) {
+      confrmTotal = confrmTotal + element.confirmed;
+      actvTotal = actvTotal + element.active;
+      recvrdTotal = recvrdTotal + element.recovered;
+      decdTotal = decdTotal + element.deceased;
     });
 
-    pastData = covidApi.fetchOldData();
+    widget.pastDataState.asMap().forEach((key, value) {
+      if (value['status'] == 'Confirmed' && value[widget.stateCode] != '') {
+        confrmPast = confrmPast + int.tryParse(value[widget.stateCode]);
+      }
 
-    await pastData.then((value) async {
-      value.oldData.asMap().forEach((key, value) {
-        if (value['status'] == 'Confirmed' && value[widget.stateCode] != '') {
-          confrmPast = confrmPast + int.tryParse(value[widget.stateCode]);
-        }
+      if (value['status'] == 'Recovered') {
+        recvrdPast = recvrdPast + int.tryParse(value[widget.stateCode]);
+      }
 
-        if (value['status'] == 'Recovered') {
-          recvrdPast = recvrdPast + int.tryParse(value[widget.stateCode]);
-        }
-
-        if (value['status'] == 'Deceased') {
-          decdPast = decdPast + int.tryParse(value[widget.stateCode]);
-        }
-      });
+      if (value['status'] == 'Deceased') {
+        decdPast = decdPast + int.tryParse(value[widget.stateCode]);
+      }
     });
 
     recvrdNew =
@@ -89,10 +92,7 @@ class _StateWiseDataState extends State<StateWiseData> {
 
   @override
   void initState() {
-    covidApi = new CovidData();
-    setState(() {
-      isLoaded = false;
-    });
+    isLoaded = false;
 
     _loadData();
 
@@ -139,7 +139,7 @@ class _StateWiseDataState extends State<StateWiseData> {
                               padding: const EdgeInsets.only(
                                   top: 1, bottom: 1, left: 8, right: 3),
                               width: textWidth * 0.17,
-                              child: Row(
+                              child: Column(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
@@ -174,7 +174,7 @@ class _StateWiseDataState extends State<StateWiseData> {
                               padding: const EdgeInsets.only(
                                   top: 1, bottom: 1, left: 8, right: 3),
                               width: textWidth * 0.17,
-                              child: Row(
+                              child: Column(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
@@ -199,7 +199,7 @@ class _StateWiseDataState extends State<StateWiseData> {
                               padding: const EdgeInsets.only(
                                   top: 1, bottom: 1, left: 8, right: 3),
                               width: textWidth * 0.17,
-                              child: Row(
+                              child: Column(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
@@ -222,50 +222,6 @@ class _StateWiseDataState extends State<StateWiseData> {
                             ),
                           ],
                         ),
-                        // Row(
-                        //   children: <Widget>[
-                        //     Container(
-                        //       padding: EdgeInsets.all(1),
-                        //       width: textWidth * 0.15,
-                        //       color: Colors.blueGrey,
-                        //        child: Text(
-                        //         '1111111',
-                        //         style: TextStyle(fontSize: 14),
-                        //         textAlign: TextAlign.left,
-                        //       ),
-                        //     ),
-                        //     Container(
-                        //       padding: EdgeInsets.all(1),
-                        //       width: textWidth * 0.15,
-                        //       color: Colors.blueGrey,
-                        //        child: Text(
-                        //         '1111111',
-                        //         style: TextStyle(fontSize: 14),
-                        //         textAlign: TextAlign.left,
-                        //       ),
-                        //     ),
-                        //     Container(
-                        //       padding: EdgeInsets.all(1),
-                        //       width: textWidth * 0.15,
-                        //       color: Colors.blueGrey,
-                        //       child: Text(
-                        //         '1111111',
-                        //         style: TextStyle(fontSize: 14),
-                        //         textAlign: TextAlign.left,
-                        //       ),
-                        //     ),
-                        //     Container(
-                        //       padding: EdgeInsets.all(1),
-                        //       width: textWidth * 0.15,
-                        //       color: Colors.blueGrey,
-                        //        child: Text(
-                        //         '1111111',
-                        //         style: TextStyle(fontSize: 14),
-                        //         textAlign: TextAlign.left,
-                        //       ),
-                        //     ),
-                        //   ],
-                        // ),
                       ],
                     ),
                   ),
@@ -283,15 +239,18 @@ class _StateWiseDataState extends State<StateWiseData> {
                       shrinkWrap: true,
                       itemCount: widget.districtData.length,
                       itemBuilder: (bCtx, index) {
-                        var distData =
-                            DistrictData.fromJson(widget.districtData[index]);
+                        var t2 = DistrictDaily.fromJson(
+                                widget.dailyDistrictData,
+                                widget.districtData[index].districtName)
+                            .distData;
+                        // print('--------data---->${t2[t2.length-1]}');
                         return cardView(
-                          dName: distData.districtName,
-                          active: distData.active,
-                          confirmed: distData.confirmed,
-                          deceased: distData.deceased,
-                          recovered: distData.recovered,
-                        );
+                            dName: widget.districtData[index].districtName,
+                            active: widget.districtData[index].active,
+                            confirmed: widget.districtData[index].confirmed,
+                            deceased: widget.districtData[index].deceased,
+                            recovered: widget.districtData[index].recovered,
+                            dailyData: t2);
                       },
                     ),
                   ),
@@ -304,66 +263,130 @@ class _StateWiseDataState extends State<StateWiseData> {
     );
   }
 
-  Widget cardView({
-    String dName,
-    int active,
-    int recovered,
-    int deceased,
-    int confirmed,
-  }) {
+  Widget cardView(
+      {String dName,
+      int active,
+      int recovered,
+      int deceased,
+      int confirmed,
+      List<DistrictDataDaily> dailyData}) {
+    // print('-----$dName-----${dailyData.length}');
+
+    var nCnfrm = 0;
+    var nDecsd = 0;
+    var nrecvrd = 0;
+
+    if (dailyData.length != 1) {
+      nCnfrm = confirmed - dailyData[dailyData.length - 2].confirmed;
+      nDecsd = deceased - dailyData[dailyData.length - 2].deceased;
+      nrecvrd = recovered - dailyData[dailyData.length - 2].recovered;
+    }
+
+    // print('-----$dName-----${dailyData[dailyData.length-1].date}---${dailyData[dailyData.length-1].confirmed}');
+    // print('-----today-----${confirmed}');
+
     return Card(
+      color: Colors.blueGrey,
       elevation: 2,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        // crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Container(
-            color: Colors.blueGrey,
-            padding: EdgeInsets.all(1),
-            child: _myText(
-              text: dName,
-              fntsz: 12,
-              isBold: true,
-              isAlignRight: false,
+      child: Padding(
+        padding: const EdgeInsets.only(
+          left: 5,
+          bottom: 3,
+          right: 5,
+          top: 3,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          // crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              padding: EdgeInsets.all(1),
+              child: _myText(
+                text: dName,
+                fntsz: 12,
+                isBold: true,
+                isAlignRight: false,
+              ),
             ),
-          ),
-          Container(
-            padding: EdgeInsets.all(1),
-            color: Colors.blueGrey,
-            child: _myText(
-              text: confirmed.toString(),
-              fntsz: 12,
-              isBold: true,
+            SizedBox(
+              width: 2,
             ),
-          ),
-          Container(
-            padding: EdgeInsets.all(1),
-            color: Colors.blueGrey,
-            child: _myText(
-              text: active.toString(),
-              fntsz: 12,
-              isBold: true,
+            Container(
+              padding: EdgeInsets.all(1),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  _myText(
+                    text: nCnfrm > 0 ? '+' + nCnfrm.toString() : '',
+                    fntsz: 12,
+                    isBold: true,
+                    color: Colors.red,
+                  ),
+                  _myText(
+                    text: confirmed.toString(),
+                    fntsz: 14,
+                    isBold: true,
+                    color: Colors.white,
+                  ),
+                ],
+              ),
             ),
-          ),
-          Container(
-            padding: EdgeInsets.all(1),
-            color: Colors.blueGrey,
-            child: _myText(
-              text: recovered.toString(),
-              fntsz: 12,
-              isBold: true,
+            SizedBox(
+              width: 2,
             ),
-          ),
-          Container(
-            padding: EdgeInsets.all(1),
-            color: Colors.blueGrey,
-            child: _myText(
-              text: deceased.toString(),
-              fntsz: 12,
-              isBold: true,
+            Container(
+              padding: EdgeInsets.all(1),
+              child: _myText(
+                text: active.toString(),
+                fntsz: 12,
+                isBold: true,
+              ),
             ),
-          ),
-        ],
+            Container(
+              padding: EdgeInsets.all(1),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  _myText(
+                    text: nrecvrd > 0 ? '+' + nrecvrd.toString() : '',
+                    fntsz: 12,
+                    isBold: true,
+                    color: Colors.green,
+                  ),
+                  _myText(
+                    text: recovered.toString(),
+                    fntsz: 14,
+                    isBold: true,
+                    color: Colors.white,
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              width: 2,
+            ),
+            Container(
+              padding: EdgeInsets.all(1),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  _myText(
+                    text: nDecsd > 0 ? '+' + nDecsd.toString() : '',
+                    fntsz: 12,
+                    isBold: true,
+                    color: Colors.grey,
+                  ),
+                  _myText(
+                    text: deceased.toString(),
+                    fntsz: 14,
+                    isBold: true,
+                    color: Colors.white,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -1,45 +1,75 @@
-import 'package:covid_19_flutter/model/pastdata.dart';
 import 'package:http/http.dart' as http;
 
 import 'dart:async';
-import 'dart:convert';
 
-import './model/state_model.dart';
+import './responsemodel.dart';
+
 
 class CovidData {
 
-  Future<States> fetchNewData() async {
+  Future<ResponseModel> fetchNewAlbum() async {
+    final response =
+        await http.get('https://jsonplaceholder.typicode.com/albums/1');
 
+    if (response.statusCode == 200) {
+      return ResponseModel.successWithData(data: response.body);
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw ResponseModel.failed(message: "Failed to loadAlbum");
+    }
+  }
+
+  //National Level :Time series, State-wise stats and Test counts
+  Future<ResponseModel> fetchAllData() async {
+    final response =
+        await http.get('https://api.covid19india.org/data.json');
+
+    if (response.statusCode == 200) {
+      return ResponseModel.successWithData(data: response.body);
+    } else {
+      return ResponseModel.failed(message: 'Failed to load album');
+    }
+  }
+
+  //State Level : has district-wise info 
+  Future<ResponseModel> fetchNewData() async {
     final response =
         await http.get('https://api.covid19india.org/v2/state_district_wise.json');
-    
+
     if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
-      // print(response.body);
-      return States.fromJson(json.decode(response.body));
+      return ResponseModel.successWithData(data: response.body);
     } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      throw Exception('Failed to load album');
+
+      return ResponseModel.failed(message: 'Failed to load album');
     }
   }
 
-  Future<PastData> fetchOldData() async {
-
+  //State Level : has district-wise info 
+  Future<ResponseModel> fetchPastDataState() async {
     final response =
         await http.get('https://api.covid19india.org/states_daily.json');
-    
+
     if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
-      // print(response.body);
-      return PastData.fromJson(json.decode(response.body));
+      return ResponseModel.successWithData(data: response.body);
     } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      throw Exception('Failed to load album');
+
+      return ResponseModel.failed(message: 'Failed to load album');
     }
   }
+
+  //State Level : has district-wise info 
+  Future<ResponseModel> fetchPastDataDistrict() async {
+    final response =
+        await http.get('https://api.covid19india.org/districts_daily.json');
+
+    if (response.statusCode == 200) {
+      return ResponseModel.successWithData(data: response.body);
+    } else {
+
+      return ResponseModel.failed(message: 'Failed to load album');
+    }
+  }
+ 
   
 }
