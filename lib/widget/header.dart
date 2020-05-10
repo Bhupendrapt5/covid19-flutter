@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../model/pastdata.dart';
+import '../widget/chart.dart';
 
 class HeaderData extends StatefulWidget {
   final StateWise totalData;
@@ -19,6 +21,10 @@ class HeaderData extends StatefulWidget {
 class _HeaderDataState extends State<HeaderData> {
   bool isLoaded = false;
   int len = 0;
+  List<CaseTimeSeriesDate> dailyConfirmData = [];
+  List<CaseTimeSeriesDate> dailyActiveData = [];
+  List<CaseTimeSeriesDate> dailyDeathData = [];
+  List<CaseTimeSeriesDate> dailyRecoveredData = [];
 
   Map<String, int> increase = {
     'confirmed': 0,
@@ -35,6 +41,36 @@ class _HeaderDataState extends State<HeaderData> {
 
     increase['recovered'] = int.parse(widget.totalData.recovered) -
         int.parse(widget.caseTimeLineData[len - 1].totalrecovered);
+
+    for (var ele in widget.caseTimeLineData.sublist(
+        widget.caseTimeLineData.length - 15, widget.caseTimeLineData.length)) {
+      dailyConfirmData.add(
+        new CaseTimeSeriesDate(
+          DateFormat('d MMMM').parse(ele.date),
+          int.parse(ele.dailyconfirmed),
+        ),
+      );
+      dailyActiveData.add(
+        new CaseTimeSeriesDate(
+          DateFormat('d MMMM').parse(ele.date),
+          ((int.parse(ele.dailyconfirmed)) -
+              int.parse(ele.dailydeceased) -
+              (ele.dailyrecovered == '' ? int.parse(ele.dailyrecovered) : 0)),
+        ),
+      );
+      dailyRecoveredData.add(
+        new CaseTimeSeriesDate(
+          DateFormat('d MMMM').parse(ele.date),
+          (ele.dailyrecovered == '' ? int.parse(ele.dailyrecovered) : 0),
+        ),
+      );
+      dailyDeathData.add(
+        new CaseTimeSeriesDate(
+          DateFormat('d MMMM').parse(ele.date),
+          (ele.dailydeceased == '' ? int.parse(ele.dailydeceased) : 0),
+        ),
+      );
+    }
 
     isLoaded = true;
   }
@@ -63,24 +99,28 @@ class _HeaderDataState extends State<HeaderData> {
                   color: Colors.red,
                   newCase: '[+${increase['confirmed']}]',
                   totalCase: widget.totalData.confirmed,
+                  dailyData: dailyConfirmData,
                 ),
                 _columnData(
                   title: 'Active',
                   color: Colors.blue,
                   newCase: '',
                   totalCase: widget.totalData.active,
+                  dailyData: dailyActiveData,
                 ),
                 _columnData(
                   title: 'Recovered',
                   color: Colors.green,
                   newCase: '[+${increase['recovered']}]',
                   totalCase: widget.totalData.recovered,
+                  dailyData: dailyRecoveredData,
                 ),
                 _columnData(
                   title: 'Confirmed',
                   color: Colors.grey,
                   newCase: '[+${increase['death']}]',
                   totalCase: widget.totalData.deaths,
+                  dailyData: dailyDeathData,
                 ),
               ],
             ),
@@ -90,14 +130,14 @@ class _HeaderDataState extends State<HeaderData> {
           );
   }
 
-  _columnData({
-    String title,
-    String newCase,
-    String totalCase,
-    Color color,
-  }) {
+  _columnData(
+      {String title,
+      String newCase,
+      String totalCase,
+      Color color,
+      List<CaseTimeSeriesDate> dailyData}) {
     return Expanded(
-      child: Column(
+          child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
@@ -110,6 +150,7 @@ class _HeaderDataState extends State<HeaderData> {
             height: 10,
           ),
           _customText(text: totalCase, fntSize: 18, fntColor: color),
+          Expanded(child: Charts.withSampleData(dailyData, color))
         ],
       ),
     );
