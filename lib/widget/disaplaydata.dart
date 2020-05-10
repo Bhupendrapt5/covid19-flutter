@@ -1,37 +1,31 @@
-
 import 'package:flutter/material.dart';
 
-
-import '../coviddata.dart';
-import './displaystatwiseData.dart';
-
-import '../model/pastdata.dart';
 import '../model/statelist.dart';
+import '../widget/displaystatwiseData.dart';
+import '../model/districtDaily.dart';
 
 class DisplayData extends StatefulWidget {
+  final List<SateWiseData> stateDataList;
+  final List<Map<String, dynamic>> pastDataState;
+  final Map<String, dynamic> dailyDistrictData;
 
-  final List<dynamic> stateDataList;
-
-  const DisplayData({Key key, this.stateDataList}) : super(key: key);
+  const DisplayData({
+    Key key,
+    @required this.stateDataList,
+    @required this.pastDataState,
+    @required this.dailyDistrictData,
+  }) : super(key: key);
 
   @override
   _DisplayDataState createState() => _DisplayDataState();
 }
 
 class _DisplayDataState extends State<DisplayData> {
-
-
-  Future<PastData> pastData;
-
-  CovidData covidApi;
-
   @override
   void initState() {
-
-
+    // print('${widget.dailyDistrictData}');
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -107,25 +101,35 @@ class _DisplayDataState extends State<DisplayData> {
           //   ),
           // ),
           ListView.builder(
-            itemCount: widget.stateDataList.length,
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
-            scrollDirection: Axis.vertical,
+            itemCount: widget.stateDataList.length,
             itemBuilder: (bCtx, index) {
-              var stateData = StatesList.fromJson(widget.stateDataList[index]);
+              Map<String, dynamic> dummy = StatesDaily.fromJson(
+                      widget.dailyDistrictData,
+                      widget.stateDataList[index].stateName)
+                  .stateDistData;
+
+              // print('${widget.dailyDistrictData}');
+
               return Column(
                 children: [
-                  StateWiseData(
-                    districtData: stateData.districtData,
-                    stateName: stateData.stateName,
-                    stateCode: stateData.stateCode.toLowerCase(),
+                  // ListTile(
+                  //     title: Text(widget.stateDataList[index].stateName),
+                  // ),
+                  DisplayDistrictWiseData(
+                    stateCode:
+                        widget.stateDataList[index].stateCode.toLowerCase(),
+                    stateName: widget.stateDataList[index].stateName,
+                    districtData: widget.stateDataList[index].districtData,
+                    pastDataState: widget.pastDataState,
+                    dailyDistrictData: dummy,
                   ),
                   SizedBox(
                     height: 1,
                   )
                 ],
               );
-              // Text(stateData.districtData.toString());
             },
           ),
         ],
@@ -136,15 +140,16 @@ class _DisplayDataState extends State<DisplayData> {
   _myText(
       {String text,
       Color color = Colors.white,
-      double fntsz,
-      bool isBold = false,
+      double fntsz = 12,
+      bool isBold = true,
       bool isAlignRight = true}) {
     return Text(
       text,
       style: TextStyle(
-          color: color,
-          fontSize: fntsz,
-          fontWeight: isBold ? FontWeight.bold : FontWeight.normal),
+        color: color,
+        fontSize: fntsz,
+        fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+      ),
       textAlign: isAlignRight ? TextAlign.right : TextAlign.left,
     );
   }

@@ -1,55 +1,54 @@
-import 'package:covid_19_flutter/widget/disaplaydata.dart';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
-import './model/state_model.dart';
-import 'coviddata.dart';
+import './coviddata.dart';
+import './model/districtDaily.dart';
+import './model/pastdata.dart';
+import './model/statelist.dart';
+import './widget/disaplaydata.dart';
+import './widget/header.dart';
 
-void main() {
-  runApp(MyApp());
+void main() => runApp(MyHomePage());
+
+class MyApp extends StatefulWidget {
+  MyApp({Key key}) : super(key: key);
+
+  @override
+  _MyAppState createState() => _MyAppState();
 }
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Covid_19',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        // visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: MyHomePage(title: 'Covid19 Tracker'),
-    );
+class _MyAppState extends State<MyApp> {
+  bool isLoadingStates = false;
+
+  CovidData covidApi;
+
+  List<StateWise> allData;
+  List<Map<String, dynamic>> pastDataState;
+  List<SateWiseData> newData;
+  Map<String, dynamic> dailyDistrictData;
+  List<CaseTimeSeries> caseTimeLineData;
+
+  String title = 'data';
+
+  _loadData() async {
+    setState(() {
+      isLoadingStates = false;
+    });
+
+    await _fetchAllData();
+    await _fetchPastDataDistrict();
+    await _fetchPastDataState();
+    await _fetchNewData();
   }
-}
-
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  Future<States> statesData;
-
-  CovidData covidApi = new CovidData();
 
   @override
   void initState() {
-    print("init state");
+    covidApi = new CovidData();
 
-    statesData = covidApi.fetchNewData();
+    _loadData();
 
     super.initState();
-  }
-
-  void _refreshData() {
-    print('Loading new data');
-    statesData = covidApi.fetchNewData();
   }
 
   @override
@@ -62,12 +61,12 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Color.fromRGBO(16, 16, 23, 1),
         elevation: 0,
         // title: Text(widget.title, style: TextStyle(fontFamily: 'regular'),),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.refresh),
-            onPressed: _refreshData,
-          )
-        ],
+        // actions: <Widget>[
+        //   IconButton(
+        //     icon: Icon(Icons.refresh),
+        //     onPressed: _refreshData,
+        //   )
+        // ],
         leading: Icon(Icons.sort),
       ),
       body: SingleChildScrollView(
@@ -116,27 +115,22 @@ class _MyHomePageState extends State<MyHomePage> {
                 ],
               ),
             ),
-            SizedBox(
-              child: Container(
-                padding: EdgeInsets.all(20),
-                child: FutureBuilder<States>(
-                  future: statesData,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return DisplayData(
-                        stateDataList: snapshot.data.states,
-                      );
-                    } else if (snapshot.hasError) {
-                      return Text("${snapshot.error}");
-                    }
-
-                    // By default, show a loading spinner.
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  },
-                ),
-              ),
+            Center(
+              child: isLoadingStates
+                  ? Column(
+                      children: <Widget>[
+                        HeaderData(
+                          caseTimeLineData: caseTimeLineData,
+                          totalData: allData[0],
+                        ),
+                        DisplayData(
+                          stateDataList: newData,
+                          pastDataState: pastDataState,
+                          dailyDistrictData: dailyDistrictData,
+                        )
+                      ],
+                    )
+                  : CircularProgressIndicator(),
             ),
           ],
         ),
@@ -163,6 +157,79 @@ class _MyHomePageState extends State<MyHomePage> {
       //     },
       //   ),
       // ),
+    );
+  }
+
+  _fetchAllData() async {
+    var result = await covidApi.fetchAllData();
+    if (result.success) {
+      allData = PastData.fromJson(json.decode(result.data)).oldData;
+      caseTimeLineData =
+          PastData.fromJson(json.decode(result.data)).caseTimeLine;
+
+      // print('----result-->${caseTimeLineData}');
+
+    } else {
+      print('----error-->${result.message.toString()}');
+    }
+  }
+
+  _fetchNewData() async {
+    var result = await covidApi.fetchNewData();
+    if (result.success) {
+      newData = StatesList.fromJson(json.decode(result.data)).dailyStatData;
+
+      // print("--->>todayy data--->${(currentData['confirmed'])}");
+    } else {
+      print('----error-->${result.message.toString()}');
+    }
+
+    setState(() {
+      isLoadingStates = true;
+    });
+  }
+
+  _fetchPastDataState() async {
+    var result = await covidApi.fetchPastDataState();
+
+    if (result.success) {
+      var tmp = jsonDecode(result.data)['states_daily'];
+
+      pastDataState = new List.from(tmp);
+
+      // print('----result-->${dt[152]['date']}');
+
+    } else {
+      print('----error-->${result.message.toString()}');
+    }
+  }
+
+  _fetchPastDataDistrict() async {
+    var result = await covidApi.fetchPastDataDistrict();
+
+    if (result.success) {
+      dailyDistrictData =
+          jsonDecode(result.data)['districtsDaily'] as Map<String, dynamic>;
+
+      // var dummy = StatesDaily.fromJson(dailyDistrictData , 'Gujarat').stateDistData;
+      // var t2 = DistrictDaily.fromJson(dummy, 'Ahmadabad').distData;
+
+      // print('----result-->${dummy}');
+
+    } else {
+      print('----error-->${result.message.toString()}');
+    }
+  }
+}
+
+class MyHomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return MaterialApp(
+      title: 'Covid19 Tracker',
+      debugShowCheckedModeBanner: false,
+      home: MyApp(),
     );
   }
 }
