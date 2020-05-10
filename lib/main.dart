@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -8,7 +7,7 @@ import './model/districtDaily.dart';
 import './model/pastdata.dart';
 import './model/statelist.dart';
 import './widget/disaplaydata.dart';
-
+import './widget/header.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatefulWidget {
@@ -19,16 +18,15 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  
   bool isLoadingStates = false;
 
   CovidData covidApi;
-
 
   List<StateWise> allData;
   List<Map<String, dynamic>> pastDataState;
   List<SateWiseData> newData;
   Map<String, dynamic> dailyDistrictData;
+  List<CaseTimeSeries> caseTimeLineData;
 
   String title = 'data';
 
@@ -45,13 +43,11 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-
     covidApi = new CovidData();
-    
+
     _loadData();
 
     super.initState();
-
   }
 
   @override
@@ -66,12 +62,15 @@ class _MyAppState extends State<MyApp> {
           title: Text('Covid19 Tracker'),
         ),
         body: Center(
-          child: isLoadingStates 
-              ? DisplayData(
-                  stateDataList: newData,
-                  pastDataState: pastDataState,
-                  dailyDistrictData: dailyDistrictData,
-                )
+          child: isLoadingStates
+            ? HeaderData(caseTimeLineData: caseTimeLineData,
+              totalData: allData[0],)
+           
+              // ? DisplayData(
+              //     stateDataList: newData,
+              //     pastDataState: pastDataState,
+              //     dailyDistrictData: dailyDistrictData,
+              //   )
               : CircularProgressIndicator(),
         ),
       ),
@@ -83,7 +82,8 @@ class _MyAppState extends State<MyApp> {
     var result = await covidApi.fetchAllData();
     if (result.success) {
       allData = PastData.fromJson(json.decode(result.data)).oldData;
-    
+      caseTimeLineData =
+          PastData.fromJson(json.decode(result.data)).caseTimeLine;
 
       // print('----result-->${caseTimeLineData}');
 
