@@ -4,7 +4,6 @@ import '../model/pastdata.dart';
 import '../coviddata.dart';
 import '../model/districtdata.dart';
 
-
 class StateWiseData extends StatefulWidget {
   final String stateName;
   final String stateCode;
@@ -110,163 +109,97 @@ class _StateWiseDataState extends State<StateWiseData> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 GestureDetector(
-                  child: Container(
-                    color: Colors.blueGrey,
-                    padding: const EdgeInsets.all(3),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      // crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            Icon(
-                              isExpanded
-                                  ? Icons.keyboard_arrow_down
-                                  : Icons.keyboard_arrow_right,
-                              size: 18,
+                  child: SizedBox(
+                    width: textWidth,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Color.fromRGBO(40, 42, 61, 1),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      margin: EdgeInsets.only(bottom: 2),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 3,
+                        vertical: 8,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        // crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Container(
+                            padding: EdgeInsets.only(left: 10),
+                            width: textWidth * 0.33,
+                            child: Wrap(
+                              children: <Widget>[
+                                nameText(context, widget.stateName),
+                              ],
                             ),
-                            Container(
-                              padding: EdgeInsets.all(1),
-                              width: textWidth * 0.25,
-                              child: _myText(
-                                  text: widget.stateName,
-                                  fntsz: 13,
-                                  isBold: true,
-                                  color: Colors.white,
-                                  isAlignRight: false),
+                          ),
+                          Container(
+                            width: textWidth * 0.53,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: <Widget>[
+                                VerticalDivider(color: Colors.white,width: 3, ),
+                                Container(
+                                  // color: Colors.blueAccent,
+                                  width: 50,
+                                  child: Column(
+                                    children: <Widget>[
+                                      if (confrmNew > 0)
+                                        newCaseText(
+                                          context,
+                                          '+' + confrmNew.toString(),
+                                          Colors.red,
+                                        ),
+                                      nameText(context, confrmTotal.toString())
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  width: 50,
+                                  // color: Colors.orangeAccent,
+                                  child: Column(
+                                    children: <Widget>[
+                                      nameText(context, actvTotal.toString()),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  // color: Colors.redAccent,
+                                  width: 50,
+                                  child: Column(
+                                    children: <Widget>[
+                                      if (recvrdNew > 0)
+                                        newCaseText(
+                                          context,
+                                          '+' + recvrdNew.toString(),
+                                          Colors.green,
+                                        ),
+                                      nameText(context, recvrdTotal.toString())
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  // color: Colors.greenAccent,
+                                  width: 50,
+                                  child: Column(
+                                    children: <Widget>[
+                                      if (decdNew > 0)
+                                        newCaseText(
+                                          context,
+                                          '+' + decdNew.toString(),
+                                          Colors.grey,
+                                        ),
+                                      nameText(context, decdTotal.toString())
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
-                            Container(
-                              padding: const EdgeInsets.only(
-                                  top: 1, bottom: 1, left: 8, right: 3),
-                              width: textWidth * 0.17,
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  _myText(
-                                    text: confrmNew > 0
-                                        ? '+' + confrmNew.toString()
-                                        : '',
-                                    fntsz: 12,
-                                    isBold: true,
-                                    color: Colors.red,
-                                  ),
-                                  _myText(
-                                    text: confrmTotal.toString(),
-                                    fntsz: 14,
-                                    isBold: true,
-                                    color: Colors.white,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.all(1),
-                              width: textWidth * 0.17,
-                              child: _myText(
-                                text: actvTotal.toString(),
-                                fntsz: 13,
-                                isBold: true,
-                                color: Colors.white,
-                              ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.only(
-                                  top: 1, bottom: 1, left: 8, right: 3),
-                              width: textWidth * 0.17,
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  _myText(
-                                    text: recvrdNew > 0
-                                        ? '+' + recvrdNew.toString()
-                                        : '',
-                                    fntsz: 12,
-                                    isBold: true,
-                                    color: Colors.green,
-                                  ),
-                                  _myText(
-                                    text: recvrdTotal.toString(),
-                                    fntsz: 14,
-                                    isBold: true,
-                                    color: Colors.white,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.only(
-                                  top: 1, bottom: 1, left: 8, right: 3),
-                              width: textWidth * 0.17,
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  _myText(
-                                    text: decdNew > 0
-                                        ? '+' + decdNew.toString()
-                                        : '',
-                                    fntsz: 12,
-                                    isBold: true,
-                                    color: Colors.grey,
-                                  ),
-                                  _myText(
-                                    text: decdTotal.toString(),
-                                    fntsz: 14,
-                                    isBold: true,
-                                    color: Colors.white,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        // Row(
-                        //   children: <Widget>[
-                        //     Container(
-                        //       padding: EdgeInsets.all(1),
-                        //       width: textWidth * 0.15,
-                        //       color: Colors.blueGrey,
-                        //        child: Text(
-                        //         '1111111',
-                        //         style: TextStyle(fontSize: 14),
-                        //         textAlign: TextAlign.left,
-                        //       ),
-                        //     ),
-                        //     Container(
-                        //       padding: EdgeInsets.all(1),
-                        //       width: textWidth * 0.15,
-                        //       color: Colors.blueGrey,
-                        //        child: Text(
-                        //         '1111111',
-                        //         style: TextStyle(fontSize: 14),
-                        //         textAlign: TextAlign.left,
-                        //       ),
-                        //     ),
-                        //     Container(
-                        //       padding: EdgeInsets.all(1),
-                        //       width: textWidth * 0.15,
-                        //       color: Colors.blueGrey,
-                        //       child: Text(
-                        //         '1111111',
-                        //         style: TextStyle(fontSize: 14),
-                        //         textAlign: TextAlign.left,
-                        //       ),
-                        //     ),
-                        //     Container(
-                        //       padding: EdgeInsets.all(1),
-                        //       width: textWidth * 0.15,
-                        //       color: Colors.blueGrey,
-                        //        child: Text(
-                        //         '1111111',
-                        //         style: TextStyle(fontSize: 14),
-                        //         textAlign: TextAlign.left,
-                        //       ),
-                        //     ),
-                        //   ],
-                        // ),
-                      ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   onTap: () {
@@ -365,6 +298,30 @@ class _StateWiseDataState extends State<StateWiseData> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget nameText(context, text) {
+    return Text(
+      text,
+      style: TextStyle(
+        fontSize: 13,
+        color: Color.fromRGBO(194, 197, 210, 1),
+        fontFamily: 'semiBold',
+      ),
+      // textAlign: TextAlign.center,
+    );
+  }
+
+  Widget newCaseText(context, text, Color color) {
+    return Text(
+      text,
+      style: TextStyle(
+        fontSize: 13,
+        color: color,
+        fontFamily: 'semiBold',
+      ),
+      textAlign: TextAlign.center,
     );
   }
 
