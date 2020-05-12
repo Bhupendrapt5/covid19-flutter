@@ -24,7 +24,7 @@ class _MyAppState extends State<MyApp> {
 
   List<StateWise> allData;
   List<Map<String, dynamic>> pastDataState;
-  List<SateWiseData> newData;
+  List<StateWiseData> newData;
   Map<String, dynamic> dailyDistrictData;
   List<CaseTimeSeries> caseTimeLineData;
 

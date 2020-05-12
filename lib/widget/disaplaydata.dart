@@ -5,7 +5,7 @@ import '../widget/displaystatwiseData.dart';
 import '../model/districtDaily.dart';
 
 class DisplayData extends StatefulWidget {
-  final List<SateWiseData> stateDataList;
+  final List<StateWiseData> stateDataList;
   final List<Map<String, dynamic>> pastDataState;
   final Map<String, dynamic> dailyDistrictData;
 

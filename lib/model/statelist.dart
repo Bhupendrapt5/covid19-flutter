@@ -1,22 +1,22 @@
 class StatesList {
-  List<SateWiseData> dailyStatData;
+  List<StateWiseData> dailyStatData;
 
   StatesList();
 
   StatesList.fromJson(json) {
     this.dailyStatData =
-        json.map<SateWiseData>((data) => SateWiseData.fromJson(data)).toList();
+        json.map<StateWiseData>((data) => StateWiseData.fromJson(data)).toList();
   }
 }
 
-class SateWiseData {
+class StateWiseData {
   String stateName;
   String stateCode;
   List<DistrictData> districtData;
 
-  SateWiseData();
+  StateWiseData();
 
-  SateWiseData.fromJson(json) {
+  StateWiseData.fromJson(json) {
     this.stateName = json['state'];
     this.stateCode = json['statecode'];
     this.districtData = json['districtData']
