@@ -54,6 +54,7 @@ class _DisplayDistrictWiseDataState extends State<DisplayDistrictWiseData> {
     // });
 
     if (widget.stateWiseData.stateName != null) {
+      widget.stateWiseData.districtData.sort((a, b) => b.confirmed.compareTo(a.confirmed));
       widget.pastDataState.asMap().forEach((key, value) {
         if (value['status'] == 'Confirmed' &&
             value[widget.stateWiseData.stateCode.toLowerCase()] != '') {
