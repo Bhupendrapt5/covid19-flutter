@@ -29,77 +29,12 @@ class _DisplayDataState extends State<DisplayData> {
 
   @override
   Widget build(BuildContext context) {
-    double textWidth = MediaQuery.of(context).size.width;
 
     return Container(
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
-          // Container(
-          //   padding: const EdgeInsets.only(
-          //     left: 20,
-          //     right: 10,
-          //     bottom: 5,
-          //     top: 5,
-          //   ),
-          //   color: Colors.indigo,
-          //   child: Row(
-          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //     // crossAxisAlignment: CrossAxisAlignment.start,
-          //     children: <Widget>[
-          //       Container(
-          //         padding: EdgeInsets.all(1),
-          //         width: textWidth * 0.30,
-          //         child: _myText(
-          //             text: 'State/UT',
-          //             fntsz: 12,
-          //             isBold: true,
-          //             color: Colors.white,
-          //             isAlignRight: false),
-          //       ),
-          //       Container(
-          //         padding: EdgeInsets.all(1),
-          //         width: textWidth * 0.15,
-          //         child: _myText(
-          //           text: 'Cnfrmd',
-          //           fntsz: 12,
-          //           isBold: true,
-          //           color: Colors.white,
-          //         ),
-          //       ),
-          //       Container(
-          //         padding: EdgeInsets.all(1),
-          //         width: textWidth * 0.15,
-          //         child: _myText(
-          //           text: 'Actv',
-          //           fntsz: 12,
-          //           isBold: true,
-          //           color: Colors.white,
-          //         ),
-          //       ),
-          //       Container(
-          //         padding: EdgeInsets.all(1),
-          //         width: textWidth * 0.15,
-          //         child: _myText(
-          //           text: 'Rcvrd',
-          //           fntsz: 12,
-          //           isBold: true,
-          //           color: Colors.white,
-          //         ),
-          //       ),
-          //       Container(
-          //         padding: EdgeInsets.all(1),
-          //         width: textWidth * 0.15,
-          //         child: _myText(
-          //           text: 'Dcsd',
-          //           fntsz: 12,
-          //           isBold: true,
-          //           color: Colors.white,
-          //         ),
-          //       ),
-          //     ],
-          //   ),
-          // ),
+        
           ListView.builder(
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
@@ -134,23 +69,6 @@ class _DisplayDataState extends State<DisplayData> {
           ),
         ],
       ),
-    );
-  }
-
-  _myText(
-      {String text,
-      Color color = Colors.white,
-      double fntsz = 12,
-      bool isBold = true,
-      bool isAlignRight = true}) {
-    return Text(
-      text,
-      style: TextStyle(
-        color: color,
-        fontSize: fntsz,
-        fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-      ),
-      textAlign: isAlignRight ? TextAlign.right : TextAlign.left,
     );
   }
 }

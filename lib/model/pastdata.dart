@@ -26,6 +26,7 @@ class CaseTimeSeries {
   CaseTimeSeries.fromJson(parsedJson){
       this.dailyconfirmed = parsedJson['dailyconfirmed'];
       this.dailydeceased = parsedJson['dailydeceased'];
+      this.dailyrecovered = parsedJson['dailyrecovered'];
       this.date = parsedJson['date'];
       this.totalconfirmed = parsedJson['totalconfirmed'];
       this.totaldeceased = parsedJson['totaldeceased'];

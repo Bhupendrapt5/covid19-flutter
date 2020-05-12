@@ -55,19 +55,19 @@ class _HeaderDataState extends State<HeaderData> {
           DateFormat('d MMMM').parse(ele.date),
           ((int.parse(ele.dailyconfirmed)) -
               int.parse(ele.dailydeceased) -
-              (ele.dailyrecovered == '' ? int.parse(ele.dailyrecovered) : 0)),
+              (ele.dailyrecovered != null ? int.parse(ele.dailyrecovered) : 0)),
         ),
       );
       dailyRecoveredData.add(
         new CaseTimeSeriesDate(
           DateFormat('d MMMM').parse(ele.date),
-          (ele.dailyrecovered == '' ? int.parse(ele.dailyrecovered) : 0),
+          (ele.dailyrecovered != null ? int.parse(ele.dailyrecovered) : 0),
         ),
       );
       dailyDeathData.add(
         new CaseTimeSeriesDate(
           DateFormat('d MMMM').parse(ele.date),
-          (ele.dailydeceased == '' ? int.parse(ele.dailydeceased) : 0),
+          (ele.dailydeceased != null ? int.parse(ele.dailydeceased) : 0),
         ),
       );
     }
@@ -116,7 +116,7 @@ class _HeaderDataState extends State<HeaderData> {
                   dailyData: dailyRecoveredData,
                 ),
                 _columnData(
-                  title: 'Confirmed',
+                  title: 'Deceased',
                   color: Colors.grey,
                   newCase: '[+${increase['death']}]',
                   totalCase: widget.totalData.deaths,
