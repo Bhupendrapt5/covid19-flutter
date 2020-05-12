@@ -1,3 +1,4 @@
+import 'package:covid_19_flutter/widget/disaplaydata.dart';
 import 'package:flutter/material.dart';
 
 import '../model/pastdata.dart';
@@ -5,20 +6,20 @@ import '../model/statelist.dart';
 import '../model/districtDaily.dart';
 
 class DisplayDistrictWiseData extends StatefulWidget {
-  final String stateName;
-  final String stateCode;
-  final List<DistrictData> districtData;
+
+  final StateWiseData stateWiseData;
   final List<Map<String, dynamic>> pastDataState;
   final Map<String, dynamic> dailyDistrictData;
 
-  const DisplayDistrictWiseData({
-    Key key,
-    @required this.stateName,
-    @required this.districtData,
-    @required this.stateCode,
-    @required this.pastDataState,
-    this.dailyDistrictData,
-  }) : super(key: key);
+  final StateWise dailyAllData;
+
+  const DisplayDistrictWiseData(
+      {Key key,
+      @required this.stateWiseData,
+      @required this.pastDataState,
+      @required this.dailyDistrictData,
+      @required this.dailyAllData})
+      : super(key: key);
 
   @override
   _DisplayDistrictWiseDataState createState() =>
@@ -37,43 +38,46 @@ class _DisplayDistrictWiseDataState extends State<DisplayDistrictWiseData> {
   int confrmNew = 0;
   int recvrdNew = 0;
   int decdNew = 0;
-  List<Map<String, dynamic>> completeMap = [];
-  Future<PastData> pastData;
 
-  // CovidData covidApi;
+  int districtLen;
 
   _loadData() async {
     int confrmPast = 0;
     int recvrdPast = 0;
     int decdPast = 0;
 
-    widget.districtData.forEach((element) {
-      confrmTotal = confrmTotal + element.confirmed;
-      actvTotal = actvTotal + element.active;
-      recvrdTotal = recvrdTotal + element.recovered;
-      decdTotal = decdTotal + element.deceased;
-    });
+    // widget.stateWiseData.districtData.forEach((element) {
+    confrmTotal = int.parse(widget.dailyAllData.confirmed);
+    actvTotal = int.parse(widget.dailyAllData.active);
+    recvrdTotal = int.parse(widget.dailyAllData.recovered);
+    decdTotal = int.parse(widget.dailyAllData.deaths);
+    // });
 
-    widget.pastDataState.asMap().forEach((key, value) {
-      if (value['status'] == 'Confirmed' && value[widget.stateCode] != '') {
-        confrmPast = confrmPast + int.tryParse(value[widget.stateCode]);
-      }
+    if (widget.stateWiseData.stateName != null) {
+      widget.pastDataState.asMap().forEach((key, value) {
+        if (value['status'] == 'Confirmed' &&
+            value[widget.stateWiseData.stateCode.toLowerCase()] != '') {
+          confrmPast = confrmPast +
+              int.tryParse(value[widget.stateWiseData.stateCode.toLowerCase()]);
+        }
 
-      if (value['status'] == 'Recovered') {
-        recvrdPast = recvrdPast + int.tryParse(value[widget.stateCode]);
-      }
+        if (value['status'] == 'Recovered') {
+          recvrdPast = recvrdPast +
+              int.tryParse(value[widget.stateWiseData.stateCode.toLowerCase()]);
+        }
 
-      if (value['status'] == 'Deceased') {
-        decdPast = decdPast + int.tryParse(value[widget.stateCode]);
-      }
-    });
+        if (value['status'] == 'Deceased') {
+          decdPast = decdPast +
+              int.tryParse(value[widget.stateWiseData.stateCode.toLowerCase()]);
+        }
+      });
 
-    recvrdNew =
-        (recvrdTotal - recvrdPast) >= 0 ? (recvrdTotal - recvrdPast) : 0;
-    confrmNew =
-        (confrmTotal - confrmPast) >= 0 ? (confrmTotal - confrmPast) : 0;
-    decdNew = (decdTotal - decdPast) >= 0 ? (decdTotal - decdPast) : 0;
-
+      recvrdNew =
+          (recvrdTotal - recvrdPast) >= 0 ? (recvrdTotal - recvrdPast) : 0;
+      confrmNew =
+          (confrmTotal - confrmPast) >= 0 ? (confrmTotal - confrmPast) : 0;
+      decdNew = (decdTotal - decdPast) >= 0 ? (decdTotal - decdPast) : 0;
+    }
     // print("Today's case in ${widget.stateName}");
     // print(
     //     'newConfirm : $confrmNew - new decd : $decdNew - new recvrd: $recvrdNew -  ');
@@ -92,7 +96,8 @@ class _DisplayDistrictWiseDataState extends State<DisplayDistrictWiseData> {
   @override
   void initState() {
     isLoaded = false;
-
+    districtLen = widget.stateWiseData.districtData != null 
+    ? widget.stateWiseData.districtData.length : 0;
     _loadData();
 
     super.initState();
@@ -130,7 +135,7 @@ class _DisplayDistrictWiseDataState extends State<DisplayDistrictWiseData> {
                             width: textWidth * 0.33,
                             child: Wrap(
                               children: <Widget>[
-                                nameText(context, widget.stateName),
+                                nameText(context, widget.dailyAllData.state),
                               ],
                             ),
                           ),
@@ -207,7 +212,9 @@ class _DisplayDistrictWiseDataState extends State<DisplayDistrictWiseData> {
                   ),
                   onTap: () {
                     setState(() {
-                      isExpanded = !isExpanded;
+                      if (widget.stateWiseData.stateName != null) {
+                        isExpanded = !isExpanded;
+                      }
                     });
                   },
                 ),
@@ -217,19 +224,25 @@ class _DisplayDistrictWiseDataState extends State<DisplayDistrictWiseData> {
                     child: ListView.builder(
                       physics: ClampingScrollPhysics(),
                       shrinkWrap: true,
-                      itemCount: widget.districtData.length,
+                      itemCount: districtLen,
                       itemBuilder: (bCtx, index) {
                         var t2 = DistrictDaily.fromJson(
                                 widget.dailyDistrictData,
-                                widget.districtData[index].districtName)
+                                widget.stateWiseData.districtData[index]
+                                    .districtName)
                             .distData;
                         // print('--------data---->${t2[t2.length-1]}');
                         return cardView(
-                            dName: widget.districtData[index].districtName,
-                            active: widget.districtData[index].active,
-                            confirmed: widget.districtData[index].confirmed,
-                            deceased: widget.districtData[index].deceased,
-                            recovered: widget.districtData[index].recovered,
+                            dName: widget
+                                .stateWiseData.districtData[index].districtName,
+                            active:
+                                widget.stateWiseData.districtData[index].active,
+                            confirmed: widget
+                                .stateWiseData.districtData[index].confirmed,
+                            deceased: widget
+                                .stateWiseData.districtData[index].deceased,
+                            recovered: widget
+                                .stateWiseData.districtData[index].recovered,
                             dailyData: t2);
                       },
                     ),
