@@ -119,6 +119,7 @@ class _MyAppState extends State<MyApp> {
                           stateDataList: newData,
                           pastDataState: pastDataState,
                           dailyDistrictData: dailyDistrictData,
+                          dailyAllData: allData,
                         )
                       ],
                     )
