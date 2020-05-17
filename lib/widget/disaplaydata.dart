@@ -3,127 +3,74 @@ import 'package:flutter/material.dart';
 import '../model/statelist.dart';
 import '../widget/displaystatwiseData.dart';
 import '../model/districtDaily.dart';
+import '../model/pastdata.dart';
 
 class DisplayData extends StatefulWidget {
-  final List<SateWiseData> stateDataList;
+  final List<StateWiseData> stateDataList;
   final List<Map<String, dynamic>> pastDataState;
   final Map<String, dynamic> dailyDistrictData;
 
-  const DisplayData({
-    Key key,
-    @required this.stateDataList,
-    @required this.pastDataState,
-    @required this.dailyDistrictData,
-  }) : super(key: key);
+  final List<StateWise> dailyAllData;
+
+  const DisplayData(
+      {Key key,
+      @required this.stateDataList,
+      @required this.pastDataState,
+      @required this.dailyDistrictData,
+      this.dailyAllData})
+      : super(key: key);
 
   @override
   _DisplayDataState createState() => _DisplayDataState();
 }
 
 class _DisplayDataState extends State<DisplayData> {
+  _sortData() async {
+    widget.dailyAllData.sort(
+        (a, b) => int.parse(b.confirmed).compareTo(int.parse(a.confirmed)));
+  }
+
   @override
   void initState() {
     // print('${widget.dailyDistrictData}');
+    _sortData();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    double textWidth = MediaQuery.of(context).size.width;
-
+    StateWiseData stateWiseData;
     return Container(
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
-          // Container(
-          //   padding: const EdgeInsets.only(
-          //     left: 20,
-          //     right: 10,
-          //     bottom: 5,
-          //     top: 5,
-          //   ),
-          //   color: Colors.indigo,
-          //   child: Row(
-          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //     // crossAxisAlignment: CrossAxisAlignment.start,
-          //     children: <Widget>[
-          //       Container(
-          //         padding: EdgeInsets.all(1),
-          //         width: textWidth * 0.30,
-          //         child: _myText(
-          //             text: 'State/UT',
-          //             fntsz: 12,
-          //             isBold: true,
-          //             color: Colors.white,
-          //             isAlignRight: false),
-          //       ),
-          //       Container(
-          //         padding: EdgeInsets.all(1),
-          //         width: textWidth * 0.15,
-          //         child: _myText(
-          //           text: 'Cnfrmd',
-          //           fntsz: 12,
-          //           isBold: true,
-          //           color: Colors.white,
-          //         ),
-          //       ),
-          //       Container(
-          //         padding: EdgeInsets.all(1),
-          //         width: textWidth * 0.15,
-          //         child: _myText(
-          //           text: 'Actv',
-          //           fntsz: 12,
-          //           isBold: true,
-          //           color: Colors.white,
-          //         ),
-          //       ),
-          //       Container(
-          //         padding: EdgeInsets.all(1),
-          //         width: textWidth * 0.15,
-          //         child: _myText(
-          //           text: 'Rcvrd',
-          //           fntsz: 12,
-          //           isBold: true,
-          //           color: Colors.white,
-          //         ),
-          //       ),
-          //       Container(
-          //         padding: EdgeInsets.all(1),
-          //         width: textWidth * 0.15,
-          //         child: _myText(
-          //           text: 'Dcsd',
-          //           fntsz: 12,
-          //           isBold: true,
-          //           color: Colors.white,
-          //         ),
-          //       ),
-          //     ],
-          //   ),
-          // ),
           ListView.builder(
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
-            itemCount: widget.stateDataList.length,
+            itemCount: widget.dailyAllData.length,
             itemBuilder: (bCtx, index) {
               Map<String, dynamic> dummy = StatesDaily.fromJson(
                       widget.dailyDistrictData,
-                      widget.stateDataList[index].stateName)
+                      widget.dailyAllData[index].state)
                   .stateDistData;
 
-              // print('${widget.dailyDistrictData}');
+              var result = widget.stateDataList.indexWhere((element) =>
+                  element.stateCode == widget.dailyAllData[index].statecode);
+              if (result >= 0) {
+                stateWiseData = widget.stateDataList[result];
+              } else {
+                stateWiseData = new StateWiseData();
+              }
+              // print('${stateWiseData.stateName}');
+              // print('------$index------->${widget.dailyAllData[index].statecode}');
 
               return Column(
                 children: [
-                  // ListTile(
-                  //     title: Text(widget.stateDataList[index].stateName),
-                  // ),
                   DisplayDistrictWiseData(
-                    stateCode:
-                        widget.stateDataList[index].stateCode.toLowerCase(),
-                    stateName: widget.stateDataList[index].stateName,
-                    districtData: widget.stateDataList[index].districtData,
                     pastDataState: widget.pastDataState,
                     dailyDistrictData: dummy,
+                    dailyAllData: widget.dailyAllData[index],
+                    stateWiseData: stateWiseData,
                   ),
                   SizedBox(
                     height: 1,
@@ -134,23 +81,6 @@ class _DisplayDataState extends State<DisplayData> {
           ),
         ],
       ),
-    );
-  }
-
-  _myText(
-      {String text,
-      Color color = Colors.white,
-      double fntsz = 12,
-      bool isBold = true,
-      bool isAlignRight = true}) {
-    return Text(
-      text,
-      style: TextStyle(
-        color: color,
-        fontSize: fntsz,
-        fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-      ),
-      textAlign: isAlignRight ? TextAlign.right : TextAlign.left,
     );
   }
 }

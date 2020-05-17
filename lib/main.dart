@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 
 import './coviddata.dart';
-import './model/districtDaily.dart';
 import './model/pastdata.dart';
 import './model/statelist.dart';
 import './widget/disaplaydata.dart';
@@ -25,7 +24,7 @@ class _MyAppState extends State<MyApp> {
 
   List<StateWise> allData;
   List<Map<String, dynamic>> pastDataState;
-  List<SateWiseData> newData;
+  List<StateWiseData> newData;
   Map<String, dynamic> dailyDistrictData;
   List<CaseTimeSeries> caseTimeLineData;
 
@@ -60,13 +59,6 @@ class _MyAppState extends State<MyApp> {
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(16, 16, 23, 1),
         elevation: 0,
-        // title: Text(widget.title, style: TextStyle(fontFamily: 'regular'),),
-        // actions: <Widget>[
-        //   IconButton(
-        //     icon: Icon(Icons.refresh),
-        //     onPressed: _refreshData,
-        //   )
-        // ],
         leading: Icon(Icons.sort),
       ),
       body: SingleChildScrollView(
@@ -128,6 +120,7 @@ class _MyAppState extends State<MyApp> {
                           stateDataList: newData,
                           pastDataState: pastDataState,
                           dailyDistrictData: dailyDistrictData,
+                          dailyAllData: allData,
                         )
                       ],
                     )
@@ -136,28 +129,6 @@ class _MyAppState extends State<MyApp> {
           ],
         ),
       ),
-      // body: Container(
-      //   child: FutureBuilder<States>(
-      //     future: statesData,
-      //     builder: (context, snapshot) {
-      //       if (snapshot.hasData) {
-      //         return Padding(
-      //           padding: const EdgeInsets.only(bottom: 10),
-      //           child: DisplayData(
-      //             stateDataList: snapshot.data.states,
-      //           ),
-      //         );
-      //       } else if (snapshot.hasError) {
-      //         return Text("${snapshot.error}");
-      //       }
-
-      //       // By default, show a loading spinner.
-      //       return Center(
-      //         child: CircularProgressIndicator(),
-      //       );
-      //     },
-      //   ),
-      // ),
     );
   }
 
@@ -226,7 +197,6 @@ class _MyAppState extends State<MyApp> {
 class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return MaterialApp(
       title: 'Covid19 Tracker',
       debugShowCheckedModeBanner: false,
