@@ -115,7 +115,8 @@ class _MyAppState extends State<MyApp> {
                 ],
               ),
             ),
-            Center(
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: isLoadingStates
                   ? Column(
                       children: <Widget>[

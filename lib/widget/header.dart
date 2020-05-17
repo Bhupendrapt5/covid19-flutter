@@ -139,7 +139,7 @@ class _HeaderDataState extends State<HeaderData> {
     return Expanded(
           child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           _customText(text: title, fntSize: 14, fntColor: color),
           SizedBox(
