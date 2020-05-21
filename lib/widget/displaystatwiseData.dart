@@ -6,7 +6,6 @@ import '../model/statelist.dart';
 import '../model/districtDaily.dart';
 
 class DisplayDistrictWiseData extends StatefulWidget {
-
   final StateWiseData stateWiseData;
   final List<Map<String, dynamic>> pastDataState;
   final Map<String, dynamic> dailyDistrictData;
@@ -54,7 +53,8 @@ class _DisplayDistrictWiseDataState extends State<DisplayDistrictWiseData> {
     // });
 
     if (widget.stateWiseData.stateName != null) {
-      widget.stateWiseData.districtData.sort((a, b) => b.confirmed.compareTo(a.confirmed));
+      widget.stateWiseData.districtData
+          .sort((a, b) => b.confirmed.compareTo(a.confirmed));
       widget.pastDataState.asMap().forEach((key, value) {
         if (value['status'] == 'Confirmed' &&
             value[widget.stateWiseData.stateCode.toLowerCase()] != '') {
@@ -97,8 +97,9 @@ class _DisplayDistrictWiseDataState extends State<DisplayDistrictWiseData> {
   @override
   void initState() {
     isLoaded = false;
-    districtLen = widget.stateWiseData.districtData != null 
-    ? widget.stateWiseData.districtData.length : 0;
+    districtLen = widget.stateWiseData.districtData != null
+        ? widget.stateWiseData.districtData.length
+        : 0;
     _loadData();
 
     super.initState();
@@ -114,6 +115,7 @@ class _DisplayDistrictWiseDataState extends State<DisplayDistrictWiseData> {
           ? Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
+                
                 GestureDetector(
                   child: SizedBox(
                     width: textWidth,
@@ -222,6 +224,7 @@ class _DisplayDistrictWiseDataState extends State<DisplayDistrictWiseData> {
                 Visibility(
                   visible: isExpanded,
                   child: Container(
+                    margin: EdgeInsets.only(bottom: 10),
                     child: ListView.builder(
                       physics: ClampingScrollPhysics(),
                       shrinkWrap: true,
@@ -279,108 +282,97 @@ class _DisplayDistrictWiseDataState extends State<DisplayDistrictWiseData> {
     // print('-----$dName-----${dailyData[dailyData.length-1].date}---${dailyData[dailyData.length-1].confirmed}');
     // print('-----today-----${confirmed}');
 
-    return Card(
-      color: Colors.blueGrey,
-      elevation: 2,
-      child: Padding(
-        padding: const EdgeInsets.only(
-          left: 5,
-          bottom: 3,
-          right: 5,
-          top: 3,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          // crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.all(1),
-              child: _myText(
-                text: dName,
-                fntsz: 12,
-                isBold: true,
-                isAlignRight: false,
-              ),
+    return Container(
+      decoration: BoxDecoration(
+        color: Color.fromRGBO(40, 42, 61, 1),
+        borderRadius: BorderRadius.circular(5),
+      ),
+      margin: EdgeInsets.only(bottom: 2),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 3,
+        vertical: 4,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        // crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            padding: EdgeInsets.only(left: 10),
+            width: MediaQuery.of(context).size.width * 0.33,
+            child: Wrap(
+              children: <Widget>[
+                nameText(context, dName),
+              ],
             ),
-            SizedBox(
-              width: 2,
-            ),
-            Container(
-              padding: EdgeInsets.all(1),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  _myText(
-                    text: nCnfrm > 0 ? '+' + nCnfrm.toString() : '',
-                    fntsz: 12,
-                    isBold: true,
-                    color: Colors.red,
+          ),
+          Container(
+            width: MediaQuery.of(context).size.width * 0.53,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                VerticalDivider(
+                  color: Colors.white,
+                  width: 3,
+                ),
+                Container(
+                  // color: Colors.blueAccent,
+                  width: 50,
+                  child: Column(
+                    children: <Widget>[
+                      if (nCnfrm > 0)
+                        newCaseText(
+                          context,
+                          '+' + nCnfrm.toString(),
+                          Colors.red,
+                        ),
+                      nameText(context, confirmed.toString())
+                    ],
                   ),
-                  _myText(
-                    text: confirmed.toString(),
-                    fntsz: 14,
-                    isBold: true,
-                    color: Colors.white,
+                ),
+                Container(
+                  width: 50,
+                  // color: Colors.orangeAccent,
+                  child: Column(
+                    children: <Widget>[
+                      nameText(context, active.toString()),
+                    ],
                   ),
-                ],
-              ),
-            ),
-            SizedBox(
-              width: 2,
-            ),
-            Container(
-              padding: EdgeInsets.all(1),
-              child: _myText(
-                text: active.toString(),
-                fntsz: 12,
-                isBold: true,
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.all(1),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  _myText(
-                    text: nrecvrd > 0 ? '+' + nrecvrd.toString() : '',
-                    fntsz: 12,
-                    isBold: true,
-                    color: Colors.green,
+                ),
+                Container(
+                  // color: Colors.redAccent,
+                  width: 50,
+                  child: Column(
+                    children: <Widget>[
+                      if (nrecvrd > 0)
+                        newCaseText(
+                          context,
+                          '+' + nrecvrd.toString(),
+                          Colors.green,
+                        ),
+                      nameText(context, recovered.toString())
+                    ],
                   ),
-                  _myText(
-                    text: recovered.toString(),
-                    fntsz: 14,
-                    isBold: true,
-                    color: Colors.white,
+                ),
+                Container(
+                  // color: Colors.greenAccent,
+                  width: 50,
+                  child: Column(
+                    children: <Widget>[
+                      if (nDecsd > 0)
+                        newCaseText(
+                          context,
+                          '+' + decdNew.toString(),
+                          Colors.grey,
+                        ),
+                      nameText(context, deceased.toString())
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            SizedBox(
-              width: 2,
-            ),
-            Container(
-              padding: EdgeInsets.all(1),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  _myText(
-                    text: nDecsd > 0 ? '+' + nDecsd.toString() : '',
-                    fntsz: 12,
-                    isBold: true,
-                    color: Colors.grey,
-                  ),
-                  _myText(
-                    text: deceased.toString(),
-                    fntsz: 14,
-                    isBold: true,
-                    color: Colors.white,
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
