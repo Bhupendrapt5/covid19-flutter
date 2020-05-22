@@ -89,38 +89,55 @@ class _HeaderDataState extends State<HeaderData> {
   Widget build(BuildContext context) {
     return isLoaded
         ? Container(
+            margin: EdgeInsets.only(bottom: 30),
             width: MediaQuery.of(context).size.width,
-            height: 150,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            height: 320,
+            child: Column(
               children: <Widget>[
-                _columnData(
-                  title: 'Confirmed',
-                  color: Colors.red,
-                  newCase: '[+${increase['confirmed']}]',
-                  totalCase: widget.totalData.confirmed,
-                  dailyData: dailyConfirmData,
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      _columnData(
+                        title: 'Confirmed',
+                        color: Colors.red,
+                        newCase: '[+${increase['confirmed']}]',
+                        totalCase: widget.totalData.confirmed,
+                        dailyData: dailyConfirmData,
+                      ),
+                      SizedBox(width: 20),
+                      _columnData(
+                        title: 'Active',
+                        color: Colors.blue,
+                        newCase: '',
+                        totalCase: widget.totalData.active,
+                        dailyData: dailyActiveData,
+                      ),
+                    ],
+                  ),
                 ),
-                _columnData(
-                  title: 'Active',
-                  color: Colors.blue,
-                  newCase: '',
-                  totalCase: widget.totalData.active,
-                  dailyData: dailyActiveData,
-                ),
-                _columnData(
-                  title: 'Recovered',
-                  color: Colors.green,
-                  newCase: '[+${increase['recovered']}]',
-                  totalCase: widget.totalData.recovered,
-                  dailyData: dailyRecoveredData,
-                ),
-                _columnData(
-                  title: 'Deceased',
-                  color: Colors.grey,
-                  newCase: '[+${increase['death']}]',
-                  totalCase: widget.totalData.deaths,
-                  dailyData: dailyDeathData,
+                SizedBox(height: 20),
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      _columnData(
+                        title: 'Recovered',
+                        color: Colors.green,
+                        newCase: '[+${increase['recovered']}]',
+                        totalCase: widget.totalData.recovered,
+                        dailyData: dailyRecoveredData,
+                      ),
+                      SizedBox(width: 20),
+                      _columnData(
+                        title: 'Deceased',
+                        color: Colors.grey,
+                        newCase: '[+${increase['death']}]',
+                        totalCase: widget.totalData.deaths,
+                        dailyData: dailyDeathData,
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -137,21 +154,34 @@ class _HeaderDataState extends State<HeaderData> {
       Color color,
       List<CaseTimeSeriesDate> dailyData}) {
     return Expanded(
-          child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          _customText(text: title, fntSize: 14, fntColor: color),
-          SizedBox(
-            height: 10,
-          ),
-          _customText(text: newCase, fntSize: 15, fntColor: color),
-          SizedBox(
-            height: 10,
-          ),
-          _customText(text: totalCase, fntSize: 18, fntColor: color),
-          Expanded(child: Charts.withSampleData(dailyData, color))
-        ],
+      child: Container(
+        decoration: BoxDecoration(
+          color: Color.fromRGBO(40, 42, 61, 1),
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+        BoxShadow(
+          color: Color.fromRGBO(0, 0, 0, 0.2),
+          offset: Offset(0, 0),
+          blurRadius: 10,
+        )
+      ],
+        ),
+        padding: EdgeInsets.only(top: 15),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            _customText(text: title, fntSize: 14, fntColor: color),
+            _customText(text: newCase, fntSize: 15, fntColor: color),
+            _customText(text: totalCase, fntSize: 18, fntColor: color),
+            Expanded(
+              child: Container(
+                width: MediaQuery.of(context).size.width * 0.3,
+                child: Charts.withSampleData(dailyData, color),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -163,7 +193,12 @@ class _HeaderDataState extends State<HeaderData> {
   }) {
     return Text(
       text,
-      style: TextStyle(color: fntColor, fontSize: fntSize),
+      style: TextStyle(
+        color: fntColor,
+        fontSize: fntSize,
+        fontFamily: 'bold',
+        height: 1.4,
+      ),
     );
   }
 }

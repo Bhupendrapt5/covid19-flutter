@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:sticky_headers/sticky_headers.dart';
 
 import './coviddata.dart';
 import './model/pastdata.dart';
@@ -57,6 +58,14 @@ class _MyAppState extends State<MyApp> {
     return Scaffold(
       backgroundColor: Color.fromRGBO(28, 28, 40, 1),
       appBar: AppBar(
+        title: Text(
+          'Covid 19 Tracker',
+          style: TextStyle(
+            fontFamily: 'regular',
+            fontSize: 16,
+            color: Colors.white,
+          ),
+        ),
         backgroundColor: Color.fromRGBO(16, 16, 23, 1),
         elevation: 0,
         leading: Icon(Icons.sort),
@@ -78,15 +87,6 @@ class _MyAppState extends State<MyApp> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    'Covid 19 Tracker',
-                    style: TextStyle(
-                      fontFamily: 'regular',
-                      fontSize: 16,
-                      color: Colors.white,
-                    ),
-                  ),
-                  SizedBox(height: myHeight * 0.03),
-                  Text(
                     'India',
                     style: TextStyle(
                       fontFamily: 'bold',
@@ -103,11 +103,12 @@ class _MyAppState extends State<MyApp> {
                       color: Colors.grey[300],
                     ),
                   ),
-                  SizedBox(height: myHeight * 0.05),
+                  // SizedBox(height: myHeight * 0.02),
                 ],
               ),
             ),
-            Center(
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: isLoadingStates
                   ? Column(
                       children: <Widget>[
@@ -115,12 +116,15 @@ class _MyAppState extends State<MyApp> {
                           caseTimeLineData: caseTimeLineData,
                           totalData: allData[0],
                         ),
-                        DisplayData(
-                          stateDataList: newData,
-                          pastDataState: pastDataState,
-                          dailyDistrictData: dailyDistrictData,
-                          dailyAllData: allData,
-                        )
+                        StickyHeader(
+                          header: tableHeader(context),
+                          content: DisplayData(
+                            stateDataList: newData,
+                            pastDataState: pastDataState,
+                            dailyDistrictData: dailyDistrictData,
+                            dailyAllData: allData,
+                          ),
+                        ),
                       ],
                     )
                   : CircularProgressIndicator(),
@@ -191,6 +195,73 @@ class _MyAppState extends State<MyApp> {
       print('----error-->${result.message.toString()}');
     }
   }
+
+  Widget tableHeader(context) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 5),
+      padding: EdgeInsets.symmetric(vertical: 5),
+      decoration: BoxDecoration(
+        color: Color.fromRGBO(16, 16, 23, 1),
+        borderRadius: BorderRadius.circular(5),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        // crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            padding: EdgeInsets.only(left: 10),
+            width: MediaQuery.of(context).size.width * 0.33,
+            child: Wrap(
+              children: <Widget>[
+                nameText(context, 'STATE', Colors.white),
+              ],
+            ),
+          ),
+          Container(
+            width: MediaQuery.of(context).size.width * 0.53,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                Container(
+                  // color: Colors.blueAccent,
+                  width: 50,
+                  child: nameText(context, 'C', Colors.red),
+                ),
+                Container(
+                  width: 50,
+                  // color: Colors.orangeAccent,
+                  child: nameText(context, 'A', Colors.blue),
+                ),
+                Container(
+                  // color: Colors.redAccent,
+                  width: 50,
+                  child: nameText(context, 'R', Colors.green),
+                ),
+                Container(
+                  // color: Colors.greenAccent,
+                  width: 50,
+                  child: nameText(context, 'D', Colors.grey),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+Widget nameText(context, text, Color color) {
+  return Text(
+    text,
+    style: TextStyle(
+      fontSize: 15,
+      color: color,
+      fontFamily: 'bold',
+    ),
+    textAlign: TextAlign.center,
+  );
 }
 
 class MyHomePage extends StatelessWidget {
