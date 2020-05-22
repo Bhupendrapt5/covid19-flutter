@@ -7,6 +7,7 @@ import './model/pastdata.dart';
 import './model/statelist.dart';
 import './widget/disaplaydata.dart';
 import './widget/header.dart';
+import 'package:sticky_headers/sticky_headers.dart';
 
 void main() => runApp(MyHomePage());
 
@@ -115,13 +116,18 @@ class _MyAppState extends State<MyApp> {
                           caseTimeLineData: caseTimeLineData,
                           totalData: allData[0],
                         ),
-                        tableHeader(context),
-                        DisplayData(
-                          stateDataList: newData,
-                          pastDataState: pastDataState,
-                          dailyDistrictData: dailyDistrictData,
-                          dailyAllData: allData,
-                        )
+                        StickyHeader(
+                          header: tableHeader(context),
+                          // content: Text('hello'),
+                          // content: tableHeader(context),
+
+                          content: DisplayData(
+                            stateDataList: newData,
+                            pastDataState: pastDataState,
+                            dailyDistrictData: dailyDistrictData,
+                            dailyAllData: allData,
+                          ),
+                        ),
                       ],
                     )
                   : CircularProgressIndicator(),
