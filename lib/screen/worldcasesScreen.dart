@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:covid_19_flutter/model/country_covid_model.dart';
 import 'package:covid_19_flutter/res/coviddata.dart';
+import 'package:covid_19_flutter/res/scrollbehabioy.dart';
 import 'package:covid_19_flutter/widget/CountryItem.dart';
 import 'package:flutter/material.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
@@ -35,41 +36,31 @@ class _WorldDataScreenState extends State<WorldDataScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color.fromRGBO(28, 28, 40, 1),
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        child: worldCovidList.length == 0
-            ? Center(
-                child: nameText('Loading....', Colors.white),
-              )
-            : ListView.builder(
-                itemBuilder: (ctx, index) {
-                  var url = 'https://www.countryflags.io/' +
-                      worldCovidList[index].countryCode.toLowerCase() +
-                      '/flat/64.png';
-                  // print('-----$index----->>${countryInfo[4]['name']}');
-                  return CountryItemData(
-                    countryData: worldCovidList[index],
-                    imgUrl: url,
-                  );
-                  //  ListTile(
-                  //   leading: CircleAvatar(
-                  //     child: Image.network(url),
-                  //   ),
-                  //   title: Text(
-                  //     worldCovidList[index].countryName,
-                  //     style: TextStyle(color: Colors.white),
-                  //   ),
-                  //   subtitle: Text(
-                  //     worldCovidList[index].confirmedTotal.toString(),
-                  //     style: TextStyle(color: Colors.white),
-                  //   ),
-                  // );
-                },
-                itemCount: worldCovidList.length,
-                // shrinkWrap: true,
-              ),
+    return ScrollConfiguration(
+        behavior: MyBehavior(),
+          child: Scaffold(
+        backgroundColor: Color.fromRGBO(28, 28, 40, 1),
+        body: Container(
+          height: MediaQuery.of(context).size.height,
+          child: worldCovidList.length == 0
+              ? Center(
+                  child: nameText('Loading....', Colors.white),
+                )
+              : ListView.builder(
+                  itemBuilder: (ctx, index) {
+                    var url = 'https://www.countryflags.io/' +
+                        worldCovidList[index].countryCode.toLowerCase() +
+                        '/flat/64.png';
+                    // print('-----$index----->>${countryInfo[4]['name']}');
+                    return CountryItemData(
+                      countryData: worldCovidList[index],
+                      imgUrl: url,
+                    );
+                  },
+                  itemCount: worldCovidList.length,
+                  // shrinkWrap: true,
+                ),
+        ),
       ),
     );
   }

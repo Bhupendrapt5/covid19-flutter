@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:covid_19_flutter/res/scrollbehabioy.dart';
 import 'package:sticky_headers/sticky_headers.dart';
 import 'package:flutter/material.dart';
 import '../res/coviddata.dart';
@@ -29,7 +30,7 @@ class _IndiaCovidCasesState extends State<IndiaCovidCases> {
 
   _loadData() async {
     // setState(() {
-      isLoadingStates = false;
+    isLoadingStates = false;
     // });
 
     await _fetchAllData();
@@ -51,68 +52,71 @@ class _IndiaCovidCasesState extends State<IndiaCovidCases> {
   Widget build(BuildContext context) {
     var myWidth = MediaQuery.of(context).size.width;
     var myHeight = MediaQuery.of(context).size.height;
-    return Scaffold(
-      backgroundColor: Color.fromRGBO(28, 28, 40, 1),
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            Container(
-              width: myWidth,
-              decoration: BoxDecoration(
-                borderRadius: new BorderRadius.only(
-                  bottomLeft: const Radius.circular(40.0),
-                  bottomRight: const Radius.circular(40.0),
+    return ScrollConfiguration(
+      behavior: MyBehavior(),
+      child: Scaffold(
+        backgroundColor: Color.fromRGBO(28, 28, 40, 1),
+        body: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              Container(
+                width: myWidth,
+                decoration: BoxDecoration(
+                  borderRadius: new BorderRadius.only(
+                    bottomLeft: const Radius.circular(40.0),
+                    bottomRight: const Radius.circular(40.0),
+                  ),
+                  color: Color.fromRGBO(16, 16, 23, 1),
                 ),
-                color: Color.fromRGBO(16, 16, 23, 1),
-              ),
-              padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    'India',
-                    style: TextStyle(
-                      fontFamily: 'bold',
-                      fontSize: 35,
-                      color: Colors.white,
+                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      'India',
+                      style: TextStyle(
+                        fontFamily: 'bold',
+                        fontSize: 35,
+                        color: Colors.white,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: myHeight * 0.005),
-                  Text(
-                    'Last updated 1 hour ago',
-                    style: TextStyle(
-                      fontFamily: 'regular',
-                      fontSize: 15,
-                      color: Colors.grey[300],
+                    SizedBox(height: myHeight * 0.005),
+                    Text(
+                      'Last updated 1 hour ago',
+                      style: TextStyle(
+                        fontFamily: 'regular',
+                        fontSize: 15,
+                        color: Colors.grey[300],
+                      ),
                     ),
-                  ),
-                  // SizedBox(height: myHeight * 0.02),
-                ],
+                    // SizedBox(height: myHeight * 0.02),
+                  ],
+                ),
               ),
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-              child: isLoadingStates
-                  ? Column(
-                      children: <Widget>[
-                        HeaderData(
-                          caseTimeLineData: caseTimeLineData,
-                          totalData: allData[0],
-                        ),
-                        StickyHeader(
-                          header: tableHeader(context),
-                          content: DisplayData(
-                            stateDataList: newData,
-                            pastDataState: pastDataState,
-                            dailyDistrictData: dailyDistrictData,
-                            dailyAllData: allData,
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                child: isLoadingStates
+                    ? Column(
+                        children: <Widget>[
+                          HeaderData(
+                            caseTimeLineData: caseTimeLineData,
+                            totalData: allData[0],
                           ),
-                        ),
-                      ],
-                    )
-                  : CircularProgressIndicator(),
-            ),
-          ],
+                          StickyHeader(
+                            header: tableHeader(context),
+                            content: DisplayData(
+                              stateDataList: newData,
+                              pastDataState: pastDataState,
+                              dailyDistrictData: dailyDistrictData,
+                              dailyAllData: allData,
+                            ),
+                          ),
+                        ],
+                      )
+                    : CircularProgressIndicator(),
+              ),
+            ],
+          ),
         ),
       ),
     );
