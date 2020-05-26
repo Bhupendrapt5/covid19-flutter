@@ -1,4 +1,4 @@
-
+import 'package:covid_19_flutter/screen/indiaScreen.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 
@@ -12,9 +12,7 @@ class _BottomMenuState extends State<BottomMenu> {
   int _pageIndex = 0;
 
   List<Widget> _pages = [
-    Center(
-      child: Text('page 1'),
-    ),
+    IndiaCovidCases(),
     Center(
       child: Text('page 2'),
     ),
@@ -27,6 +25,7 @@ class _BottomMenuState extends State<BottomMenu> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true,
       appBar: AppBar(
         title: Text(
           'Covid 19 Tracker',
@@ -40,16 +39,16 @@ class _BottomMenuState extends State<BottomMenu> {
         elevation: 0,
         leading: Icon(Icons.sort),
       ),
-
       bottomNavigationBar: CurvedNavigationBar(
         key: _bottomNavigationKey,
-        // backgroundColor: Color.fromRGBO(60, 60, 92, 1),
-        buttonBackgroundColor: Colors.white,
-        color: Color.fromRGBO(60, 60, 92, 1),
+        height: MediaQuery.of(context).size.height*0.07,
+        backgroundColor: Colors.transparent,
+        buttonBackgroundColor: Color.fromRGBO(125, 72, 245, 1),
+        color: Color.fromRGBO(16, 16, 23, 1),
         items: <Widget>[
-          Icon(Icons.add, size: 30),
-          Icon(Icons.list, size: 30),
-          Icon(Icons.compare_arrows, size: 30),
+          _icons(Icons.home),
+          _icons(Icons.golf_course),
+          _icons(Icons.crop_square),
         ],
         onTap: (index) {
           setState(() {
@@ -59,5 +58,9 @@ class _BottomMenuState extends State<BottomMenu> {
       ),
       body: _pages[_pageIndex],
     );
+  }
+  
+  _icons(IconData icon){
+    return Icon(icon, size: 30,color: Colors.white,);
   }
 }
