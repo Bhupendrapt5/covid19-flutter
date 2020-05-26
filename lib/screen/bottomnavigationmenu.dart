@@ -1,4 +1,5 @@
 import 'package:covid_19_flutter/screen/indiaScreen.dart';
+import 'package:covid_19_flutter/screen/worldcasesScreen.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:covid_19_flutter/res/my_flutter_app_icons.dart';
@@ -13,9 +14,7 @@ class _BottomMenuState extends State<BottomMenu> {
 
   List<Widget> _pages = [
     IndiaCovidCases(),
-    Center(
-      child: Text('page 2'),
-    ),
+    WorldDataScreen(),
     Center(
       child: Text('page 3'),
     ),

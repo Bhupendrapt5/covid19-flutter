@@ -28,9 +28,9 @@ class _IndiaCovidCasesState extends State<IndiaCovidCases> {
   String title = 'data';
 
   _loadData() async {
-    setState(() {
+    // setState(() {
       isLoadingStates = false;
-    });
+    // });
 
     await _fetchAllData();
     await _fetchPastDataDistrict();

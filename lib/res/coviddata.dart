@@ -70,6 +70,32 @@ class CovidData {
       return ResponseModel.failed(message: 'Failed to load album');
     }
   }
+
+  //worldCovidData : has worldCovidData info 
+  Future<ResponseModel> worldCovidData() async {
+    final response =
+        await http.get('https://api.covid19api.com/summary');
+
+    if (response.statusCode == 200) {
+      return ResponseModel.successWithData(data: response.body);
+    } else {
+
+      return ResponseModel.failed(message: 'Failed to load album');
+    }
+  }
+ 
+  //worldCovidData : has worldCovidData info 
+  Future<ResponseModel> worldCountryInfo() async {
+    final response =
+        await http.get('https://restcountries.eu/rest/v2/all');
+
+    if (response.statusCode == 200) {
+      return ResponseModel.successWithData(data: response.body);
+    } else {
+
+      return ResponseModel.failed(message: 'Failed to load album');
+    }
+  }
  
   
 }
