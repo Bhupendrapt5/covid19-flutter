@@ -1,7 +1,7 @@
 import 'package:covid_19_flutter/screen/indiaScreen.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
-
+import 'package:covid_19_flutter/res/my_flutter_app_icons.dart';
 class BottomMenu extends StatefulWidget {
   //State class
   @override
@@ -46,9 +46,9 @@ class _BottomMenuState extends State<BottomMenu> {
         buttonBackgroundColor: Color.fromRGBO(125, 72, 245, 1),
         color: Color.fromRGBO(16, 16, 23, 1),
         items: <Widget>[
-          _icons(Icons.home),
-          _icons(Icons.golf_course),
-          _icons(Icons.crop_square),
+          _icons(MyFlutterApp.home),
+          _icons(MyFlutterApp.globe),
+          _icons(MyFlutterApp.chart_area),
         ],
         onTap: (index) {
           setState(() {

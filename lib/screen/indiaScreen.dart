@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:sticky_headers/sticky_headers.dart';
 import 'package:flutter/material.dart';
-import '../coviddata.dart';
+import '../res/coviddata.dart';
 import '../model/pastdata.dart';
 import '../model/statelist.dart';
 import '../widget/disaplaydata.dart';
