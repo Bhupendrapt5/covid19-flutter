@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:covid_19_flutter/screen/bottomnavigationmenu.dart';
 import 'package:flutter/material.dart';
 import 'package:sticky_headers/sticky_headers.dart';
 
@@ -270,7 +271,7 @@ class MyHomePage extends StatelessWidget {
     return MaterialApp(
       title: 'Covid19 Tracker',
       debugShowCheckedModeBanner: false,
-      home: MyApp(),
+      home: BottomMenu(),
     );
   }
 }
