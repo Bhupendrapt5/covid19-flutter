@@ -1,11 +1,11 @@
-class ResponseModel {
+class GetResponse {
   bool success = false;
   String message = "";
   dynamic data;
 
-  ResponseModel.failed({this.message}) : this.success = false;
+  GetResponse.failed({this.message}) : this.success = false;
 
-  ResponseModel.success() : this.success = true;
+  GetResponse.success() : this.success = true;
 
-  ResponseModel.successWithData({this.data}) : success = true;
+  GetResponse.successWithData({this.data}) : success = true;
 }
